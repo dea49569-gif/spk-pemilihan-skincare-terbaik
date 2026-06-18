@@ -96,13 +96,5 @@ spk-skincare-saw/
 
 ---
 
-## 👥 Anggota Kelompok
-
-| Nama | NIM |
-|------|-----|
-| (isi nama) | (isi NIM) |
-| (isi nama) | (isi NIM) |
-
----
 
 > Dibuat sebagai Tugas Final — Sistem Pendukung Keputusan
