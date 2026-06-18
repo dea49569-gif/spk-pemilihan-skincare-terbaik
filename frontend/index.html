@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPK Pemilihan Skincare Terbaik - Metode SAW</title>
+
+  <!-- CSS dipisah ke file sendiri -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════════════ -->
+<header>
+  <h1>🌸 SPK Pemilihan Skincare Terbaik</h1>
+  <p>Studi Kasus · Sistem Pendukung Keputusan · Tugas Final</p>
+  <div class="badge-method">Metode SAW — Simple Additive Weighting</div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     NAVIGASI TAB
+     ═══════════════════════════════════════════════════════════ -->
+<div class="tabs">
+  <button class="tab-btn active"  onclick="showPage('beranda')">🏠 Beranda</button>
+  <button class="tab-btn"         onclick="showPage('kriteria')">📋 Kriteria</button>
+  <button class="tab-btn"         onclick="showPage('alternatif')">💄 Alternatif</button>
+  <button class="tab-btn"         onclick="showPage('nilai')">📊 Nilai Alternatif</button>
+  <button class="tab-btn"         onclick="showPage('normalisasi')">🔢 Normalisasi</button>
+  <button class="tab-btn"         onclick="showPage('perhitungan')">⚙️ Perhitungan</button>
+  <button class="tab-btn"         onclick="showPage('hasil')">🏆 Hasil & Ranking</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HALAMAN: BERANDA
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page active" id="beranda">
+
+  <!-- Statistik singkat -->
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="num" id="info-jumlah-alt">15</div>
+      <div class="lbl">ALTERNATIF SKINCARE</div>
+    </div>
+    <div class="info-card">
+      <div class="num" id="info-jumlah-kri">6</div>
+      <div class="lbl">KRITERIA PENILAIAN</div>
+    </div>
+    <div class="info-card">
+      <div class="num">SAW</div>
+      <div class="lbl">METODE YANG DIGUNAKAN</div>
+    </div>
+    <div class="info-card">
+      <div class="num">100%</div>
+      <div class="lbl">TOTAL BOBOT KRITERIA</div>
+    </div>
+  </div>
+
+  <!-- Latar belakang -->
+  <div class="card">
+    <div class="card-header">📌 Latar Belakang</div>
+    <div class="card-body">
+      <p style="line-height:1.8;color:var(--muted)">
+        Industri skincare di Indonesia berkembang sangat pesat. Konsumen dihadapkan pada
+        ratusan pilihan produk perawatan kulit dengan harga, kandungan, dan kualitas yang
+        beragam. Pemilihan skincare yang tepat tidak hanya dipengaruhi oleh harga, tetapi
+        juga oleh kandungan bahan aktif, reputasi merek, efektivitas produk, keamanan kulit,
+        serta ketersediaan produk di pasaran.
+      </p>
+      <p style="line-height:1.8;color:var(--muted);margin-top:1rem">
+        Sistem Pendukung Keputusan (SPK) dengan metode
+        <strong>Simple Additive Weighting (SAW)</strong> digunakan untuk membantu konsumen
+        memilih produk skincare terbaik secara objektif berdasarkan bobot kriteria yang
+        telah ditentukan.
+      </p>
+    </div>
+  </div>
+
+  <!-- Rumus SAW -->
+  <div class="card">
+    <div class="card-header">📐 Rumus Metode SAW</div>
+    <div class="card-body">
+      <div class="step-box">
+        <div class="step-title">Langkah 1 — Normalisasi Matriks</div>
+        <div class="formula">
+          Benefit: r<sub>ij</sub> = x<sub>ij</sub> / Max(x<sub>ij</sub>)<br>
+          Cost   : r<sub>ij</sub> = Min(x<sub>ij</sub>) / x<sub>ij</sub>
+        </div>
+      </div>
+      <div class="step-box">
+        <div class="step-title">Langkah 2 — Nilai Preferensi</div>
+        <div class="formula">
+          V<sub>i</sub> = Σ (w<sub>j</sub> × r<sub>ij</sub>)<br><br>
+          Keterangan:<br>
+          V<sub>i</sub>  = Nilai akhir alternatif ke-i<br>
+          w<sub>j</sub>  = Bobot kriteria ke-j<br>
+          r<sub>ij</sub> = Nilai ternormalisasi alternatif i pada kriteria j
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /beranda -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     HALAMAN: KRITERIA
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page" id="kriteria">
+
+  <!-- Notifikasi CRUD -->
+  <div id="notif-kriteria" class="notif"></div>
+
+  <!-- Form CRUD Kriteria -->
+  <div class="card" id="form-kriteria">
+    <div class="card-header">
+      <span class="form-title">➕ Tambah Kriteria Baru</span>
+    </div>
+    <div class="card-body">
+      <input type="hidden" id="hidden-edit-kode" />
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Kode Kriteria</label>
+          <input type="text" id="input-kode-k" placeholder="contoh: C7" maxlength="5" />
+        </div>
+        <div class="form-group">
+          <label>Nama Kriteria</label>
+          <input type="text" id="input-nama-k" placeholder="contoh: Dermatologist Tested" />
+        </div>
+        <div class="form-group">
+          <label>Bobot (0–1)</label>
+          <input type="number" id="input-bobot-k" placeholder="contoh: 0.10" step="0.01" min="0.01" max="1" />
+        </div>
+        <div class="form-group">
+          <label>Jenis</label>
+          <select id="input-jenis-k">
+            <option value="benefit">Benefit</option>
+            <option value="cost">Cost</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Keterangan</label>
+          <input type="text" id="input-keterangan-k" placeholder="Penjelasan singkat..." />
+        </div>
+      </div>
+
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.5rem">
+        <button class="btn btn-primary" onclick="PageKriteria.simpan()">💾 Simpan</button>
+        <button class="btn btn-secondary" onclick="PageKriteria.resetForm()">🔄 Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabel kriteria -->
+  <div class="card">
+    <div class="card-header">📋 Data Kriteria Penilaian</div>
+    <div class="card-body">
+      <p class="text-muted" style="margin-bottom:1rem">
+        Terdapat <strong>6 kriteria</strong> yang digunakan. Total bobot = <strong class="highlight">100%</strong>
+      </p>
+      <div class="tbl-wrap">
+        <table id="tbl-kriteria"></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grafik bobot -->
+  <div class="card">
+    <div class="card-header">📊 Visualisasi Bobot Kriteria</div>
+    <div class="card-body" id="bobot-chart"></div>
+  </div>
+
+</div><!-- /kriteria -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     HALAMAN: ALTERNATIF
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page" id="alternatif">
+
+  <div id="notif-alternatif" class="notif"></div>
+
+  <!-- Form CRUD Alternatif -->
+  <div class="card" id="form-alternatif">
+    <div class="card-header">
+      <span class="form-title">➕ Tambah Alternatif Baru</span>
+    </div>
+    <div class="card-body">
+      <input type="hidden" id="hidden-edit-kode-a" />
+
+      <!-- Info produk -->
+      <p style="font-weight:600;color:var(--rose);margin-bottom:.8rem">📦 Info Produk</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Kode</label>
+          <input type="text" id="input-kode-a" placeholder="A16" maxlength="5" />
+        </div>
+        <div class="form-group">
+          <label>Nama Produk</label>
+          <input type="text" id="input-nama-a" placeholder="Nama produk skincare" />
+        </div>
+        <div class="form-group">
+          <label>Brand</label>
+          <input type="text" id="input-brand-a" placeholder="Nama brand" />
+        </div>
+        <div class="form-group">
+          <label>Jenis Produk</label>
+          <select id="input-jenis-a">
+            <option>Serum</option>
+            <option>Sunscreen</option>
+            <option>Toner</option>
+            <option>Essence</option>
+            <option>Moisturizer</option>
+            <option>Treatment</option>
+            <option>Cleanser</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Harga (Rp)</label>
+          <input type="number" id="input-harga-a" placeholder="85000" min="1" />
+        </div>
+      </div>
+
+      <!-- Nilai per kriteria (dirender oleh JS) -->
+      <p style="font-weight:600;color:var(--rose);margin:.8rem 0">📊 Nilai per Kriteria</p>
+      <div class="form-row" id="form-nilai-kriteria">
+        <!-- diisi oleh PageAlternatif.renderFormNilai() -->
+      </div>
+
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.5rem">
+        <button class="btn btn-primary"   onclick="PageAlternatif.simpan()">💾 Simpan</button>
+        <button class="btn btn-secondary" onclick="PageAlternatif.resetForm()">🔄 Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabel alternatif -->
+  <div class="card">
+    <div class="card-header">💄 Data Alternatif — Produk Skincare</div>
+    <div class="card-body">
+      <div class="tbl-wrap">
+        <table id="tbl-alternatif"></table>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /alternatif -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     HALAMAN: NILAI
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page" id="nilai">
+  <div class="card">
+    <div class="card-header">📊 Matriks Nilai Alternatif (Matriks Keputusan)</div>
+    <div class="card-body">
+      <p class="text-muted" style="margin-bottom:1rem">
+        Nilai setiap alternatif (A1–A15) terhadap masing-masing kriteria (C1–C6).
+      </p>
+      <div class="tbl-wrap">
+        <table id="tbl-nilai"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HALAMAN: NORMALISASI
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page" id="normalisasi">
+  <div class="card">
+    <div class="card-header">🔢 Proses Normalisasi Matriks</div>
+    <div class="card-body">
+      <div id="normalisasi-steps"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">📋 Matriks Ternormalisasi (R)</div>
+    <div class="card-body">
+      <div class="tbl-wrap">
+        <table id="tbl-norm"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HALAMAN: PERHITUNGAN
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page" id="perhitungan">
+  <div class="card">
+    <div class="card-header">⚙️ Proses Perhitungan Nilai Preferensi (Vi)</div>
+    <div class="card-body">
+      <div class="step-box">
+        <div class="step-title">Formula Nilai Preferensi</div>
+        <div class="formula">
+          V<sub>i</sub> = (w1×r<sub>i1</sub>) + (w2×r<sub>i2</sub>) + (w3×r<sub>i3</sub>) +
+          (w4×r<sub>i4</sub>) + (w5×r<sub>i5</sub>) + (w6×r<sub>i6</sub>)
+        </div>
+        <div style="margin-top:.6rem;font-size:.82rem;color:var(--muted)" id="info-bobot-perhitungan">
+          <!-- diisi oleh JS -->
+        </div>
+      </div>
+      <div id="perhitungan-detail"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HALAMAN: HASIL & RANKING
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page" id="hasil">
+  <!-- Hero pemenang -->
+  <div id="winner-section"></div>
+
+  <!-- Tabel ranking -->
+  <div class="card">
+    <div class="card-header">🏆 Ranking Akhir Seluruh Alternatif</div>
+    <div class="card-body">
+      <div class="tbl-wrap">
+        <table id="tbl-hasil"></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kartu ranking -->
+  <div class="card">
+    <div class="card-header">🌸 Kartu Ranking</div>
+    <div class="card-body">
+      <div class="rank-grid" id="rank-cards"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════ -->
+<footer>
+  Tugas Final · Sistem Pendukung Keputusan &nbsp;|&nbsp;
+  Metode <span>SAW — Simple Additive Weighting</span><br>
+  Studi Kasus: Pemilihan Skincare Terbaik &nbsp;·&nbsp; 15 Alternatif · 6 Kriteria
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCRIPT — urutan pemuatan penting!
+     1. database (data hardcode)
+     2. controllers (CRUD logic)
+     3. routes/api (penghubung)
+     4. saw (logika kalkulasi)
+     5. pages (render UI)
+     6. app (router)
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- Backend layer -->
+<script src="../backend/data/database.js"></script>
+<script src="../backend/controllers/kriteriaController.js"></script>
+<script src="../backend/controllers/alternatifController.js"></script>
+<script src="../backend/routes/api.js"></script>
+
+<!-- Frontend layer -->
+<script src="js/saw.js"></script>
+<script src="js/pages/beranda.js"></script>
+<script src="js/pages/kriteria.js"></script>
+<script src="js/pages/alternatif.js"></script>
+<script src="js/pages/halaman-lainnya.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
